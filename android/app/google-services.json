@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "121289847073",
+    "firebase_url": "https://amer-shop.firebaseio.com",
+    "project_id": "amer-shop",
+    "storage_bucket": "amer-shop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121289847073:android:c981eb765b2670db610e60",
+        "android_client_info": {
+          "package_name": "com.example.amershop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "121289847073-ndbjofd7s4dedisfe9rnh4ji855chggj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYtfqySLGHxMAjbqDeJMxnM1v72dpOut0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "121289847073-ndbjofd7s4dedisfe9rnh4ji855chggj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
