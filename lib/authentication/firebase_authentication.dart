@@ -14,7 +14,7 @@ class ShopFirebaseAuthentication implements Authenticatable {
   }
 
   @override
-  signIn(String email, String password) async {
+   signIn(String email, String password) async {
     var user = await firbaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     return user.user;

@@ -25,12 +25,12 @@ class _ViewProductState extends State<ViewCategories> {
           if (amer.connectionState == ConnectionState.none) {
             return Text('None DataFound here');
           }
-          if (amer.connectionState == ConnectionState.done ||
-              amer.connectionState == ConnectionState.active) {
+          if (amer.connectionState == ConnectionState.done) return Text('Done');
+          if (amer.connectionState == ConnectionState.active) {
             return ListView(
-                children: amer.data.documents.map((DocumentSnapshot amer) {
+                children: amer.data.docs.map((DocumentSnapshot amer) {
               return ListTile(
-                title: Text(amer.data()['category_title']),
+                title: Text( amer.data()['category_title'].toString() ),
                 trailing: IconButton(
                   color: Colors.red,
                   icon: Icon(Icons.delete),

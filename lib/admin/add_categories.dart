@@ -8,7 +8,9 @@ class AddCategories extends StatefulWidget {
 
 class _AddCategoriesState extends State<AddCategories> {
   bool isLoading = false;
-  int responseNumber = 0; // this is required for checking if the the category is already added not ......
+  int errorNumber = 0;
+  int responseNumber =
+      0; // this is required for checking if the the category is already added not ......
   CollectionReference categoriesCollection =
       FirebaseFirestore.instance.collection('categories');
   TextEditingController categoryTextEditingController = TextEditingController();
@@ -25,7 +27,6 @@ class _AddCategoriesState extends State<AddCategories> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         centerTitle: true,
         title: Text('AddCategory'),
       ),
@@ -55,8 +56,6 @@ class _AddCategoriesState extends State<AddCategories> {
                     // labelText: 'Enter category',
                     hintText: 'add_new_category'),
               ),
-
-
             ],
           ),
         ),
@@ -67,8 +66,13 @@ class _AddCategoriesState extends State<AddCategories> {
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               var responseNumber = await checkCategory();
+
               if (responseNumber >= 1) {
-                print('We have ${responseNumber} items of this product ua_amer ');
+                setState(() {
+                  errorNumber = responseNumber;
+                });
+                print(
+                    'We have ${responseNumber} items of this product ua_amer ');
               } else {
                 setState(() {
                   isLoading = true;
@@ -81,7 +85,7 @@ class _AddCategoriesState extends State<AddCategories> {
           child: Text('Add Category'),
         ),
         SizedBox(height: 50),
-        _creatingErrorMessage(responseNumber),
+        (errorNumber >= 1) ? _creatingErrorMessage(errorNumber) : Container(),
       ],
     );
   }
@@ -122,10 +126,13 @@ class _AddCategoriesState extends State<AddCategories> {
   }
 
   Widget _creatingErrorMessage(int response) {
-    return Container(child: (response >0) ? Text(
-      'we have ${response} of this product',
-      style: TextStyle(color: Colors.red,),
-    ) : Text(''));
+    return Container(
+      child: Text(
+        'we have ${response} items of this product',
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+    );
   }
-
 }

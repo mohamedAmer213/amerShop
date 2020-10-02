@@ -2,6 +2,7 @@
 
 import 'package:amershop/admin/add_product.dart';
 import 'package:amershop/admin/view_products.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:amershop/authentication/Authentication.dart';
@@ -9,6 +10,7 @@ import 'package:amershop/authentication/authenticatable.dart';
 import 'package:amershop/authentication/firebase_authentication.dart';
 import 'package:amershop/authentication/firestore_authentication.dart';
 import 'package:amershop/user/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'admin/add_categories.dart';
 import 'admin/view_categories.dart';
@@ -17,7 +19,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(AuthView());
-
 
   /*underStanding using of map ua_amer
   *
@@ -33,29 +34,29 @@ void main() async {
   * */
 }
 
-
-
 class AuthView extends StatefulWidget {
   @override
   _AuthViewState createState() => _AuthViewState();
 }
 
 class _AuthViewState extends State<AuthView> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        'view_categories':(context)=> ViewCategories(),
-        'add_product':(context) {return AddProduct();},
-        'add_category':(context) => AddCategories(),
-        'view_products':(context)=> ViewProduct(),
+        'view_categories': (context) => ViewCategories(),
+        'add_product': (context) {
+          return AddProduct();
+        },
+        'add_category': (context) => AddCategories(),
+        'view_products': (context) => ViewProduct(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.teal,
       ),
-      home: AuthTest(),);
+      home: AuthTest(),
+    );
   }
 }
 
@@ -65,12 +66,21 @@ class AuthTest extends StatefulWidget {
 }
 
 class _AuthTestState extends State<AuthTest> {
+  bool isLoading = false;
   ShopFirebaseAuthentication _shopfirebaseAuthentication =
-  ShopFirebaseAuthentication();
+      ShopFirebaseAuthentication();
   TextEditingController _emailTextEditingController = TextEditingController();
   TextEditingController _passwordTextEditingController =
-  TextEditingController();
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  //
+  // signIn(String email, String password) async {
+  //   var user = await FirebaseAuth.instance
+  //       .signInWithEmailAndPassword(email: email, password: password);
+  //
+  //   return user.user;
+  // }
+
 
   @override
   void dispose() {
@@ -82,7 +92,7 @@ class _AuthTestState extends State<AuthTest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         centerTitle: true,
         title: Text('Auth'),
       ),
@@ -95,12 +105,12 @@ class _AuthTestState extends State<AuthTest> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  validator: (value){
-                    if(value.isEmpty){
+                  validator: (value) {
+                    if (value.isEmpty) {
                       return 'This is required';
                     }
-                  return null;
-                    },
+                    return null;
+                  },
                   controller: _emailTextEditingController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -114,8 +124,8 @@ class _AuthTestState extends State<AuthTest> {
                   height: 10,
                 ),
                 TextFormField(
-                  validator: (value){
-                    if(value.isEmpty){
+                  validator: (value) {
+                    if (value.isEmpty) {
                       return 'This is required';
                     }
                     return null;
@@ -130,21 +140,20 @@ class _AuthTestState extends State<AuthTest> {
                   ),
                 ),
                 RaisedButton(
-                  onPressed: ()async{
-                    if(_formKey.currentState.validate()){
-                      var user= await _shopfirebaseAuthentication.signIn(_emailTextEditingController.text,
-                          _passwordTextEditingController.text);
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, 'view_products');
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                     var user=_shopfirebaseAuthentication.signIn(_emailTextEditingController.text,
+                         _passwordTextEditingController.text);
+                     Navigator.pop(context);
+                     Navigator.pushNamed(context, 'view_products');
                     }
                   },
-                  child: Text('signIn'),
+                  child: Text('SignIn'),
                 ),
                 RaisedButton(
-                  onPressed: ()async{
-                    var user= await _shopfirebaseAuthentication.signOut();
+                  onPressed: () async {
+                    var user = await _shopfirebaseAuthentication.signOut();
                     print(user);
-
                   },
                   child: Text('signOut'),
                 ),
@@ -155,26 +164,19 @@ class _AuthTestState extends State<AuthTest> {
       ),
     );
   }
+
+  Widget _loading() {
+    // this is for waiting until the data loaded to the firebase ua_Amer
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Center(
+          child: CircularProgressIndicator(
+              // backgroundColor: Colors.black,
+              )),
+    );
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -224,7 +226,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
 class MyApp extends StatelessWidget {
   //Here we will test our interface ua_amer
   Authenticatable authentication = FireStoreAuthentication();
@@ -241,7 +242,8 @@ class MyApp extends StatelessWidget {
         ),
         home: Scaffold(
           body: Container(
-            color: Colors.teal,),
+            color: Colors.teal,
+          ),
         ));
   }
 }

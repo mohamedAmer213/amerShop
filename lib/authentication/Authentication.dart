@@ -9,7 +9,7 @@ class Authentication implements Authenticatable{
   }
 
   @override
-  Future<bool> signIn(String email, String password) {
+  Future<bool> signIn(String email, String password)  {
     // TODO: implement signIn
     throw UnimplementedError();
   }

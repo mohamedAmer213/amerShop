@@ -40,8 +40,9 @@ class _ViewProductState extends State<ViewProduct> {
             return new ListView(
               children: snapshot.data.documents.map((DocumentSnapshot amer) {
                 return ListTile(
-                  title: Text(amer.data()['product_price']),
-                  subtitle: Text(amer.data()['product_desc']),
+                  title: Text(amer.data()['product_title']),
+                  subtitle: Text(" ${amer.data()['product_desc']} \n ${amer.data()['product_price']} "),
+
                   trailing: IconButton(
                     icon: Icon(
                       Icons.delete,
@@ -119,7 +120,7 @@ Widget firebaseDataView(QuerySnapshot snapshot) {
       return ListView(
         children: amerSnapshot.data.docs.map((DocumentSnapshot document) {
           return ListTile(
-            title: document.data()['product_desc'],
+            title: document.data()['product_price'],
           );
         }).toList(),
       );
