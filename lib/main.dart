@@ -1,6 +1,7 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:amershop/admin/add_product.dart';
+import 'package:amershop/admin/edit_product.dart';
 import 'package:amershop/admin/view_products.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,9 +12,11 @@ import 'package:amershop/authentication/firebase_authentication.dart';
 import 'package:amershop/authentication/firestore_authentication.dart';
 import 'package:amershop/user/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'admin/add_categories.dart';
 import 'admin/view_categories.dart';
+import 'admin/view_single_product.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +46,7 @@ class _AuthViewState extends State<AuthView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       routes: {
         'view_categories': (context) => ViewCategories(),
         'add_product': (context) {
@@ -50,9 +54,13 @@ class _AuthViewState extends State<AuthView> {
         },
         'add_category': (context) => AddCategories(),
         'view_products': (context) => ViewProduct(),
+        'view_single_product': (context) => ViewSingleProduct(),
+
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        // textTheme: Theme.of(context).primaryTextTheme,
+        primaryTextTheme:Theme.of(context).textTheme.apply(fontFamily:'amer') ,
         primaryColor: Colors.teal,
       ),
       home: AuthTest(),

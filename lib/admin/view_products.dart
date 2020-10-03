@@ -1,8 +1,10 @@
 /*so this class will be used to get all the products from FireStore solve */
 import 'package:amershop/admin/add_categories.dart';
 import 'package:amershop/admin/add_product.dart';
+import 'package:amershop/admin/edit_product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ViewProduct extends StatefulWidget {
   @override
@@ -10,6 +12,12 @@ class ViewProduct extends StatefulWidget {
 }
 
 class _ViewProductState extends State<ViewProduct> {
+  // String passedProductTitle;
+  //
+  // String passedProductPrice;
+  //
+  // String passedProductDesc;
+
   @override
   Widget build(BuildContext context) {
     CollectionReference users =
@@ -17,6 +25,13 @@ class _ViewProductState extends State<ViewProduct> {
     return Scaffold(
       drawer: buildDrawer(context),
       appBar: AppBar(
+        actions: [
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.pushNamed(context, 'add_product');
+              }),
+        ],
         elevation: 0,
         centerTitle: true,
         title: Text('ViewProducts'),
@@ -39,29 +54,76 @@ class _ViewProductState extends State<ViewProduct> {
 
             return new ListView(
               children: snapshot.data.documents.map((DocumentSnapshot amer) {
-                return ListTile(
-                  title: Text(amer.data()['product_title']),
-                  subtitle: Text(" ${amer.data()['product_desc']} \n ${amer.data()['product_price']} "),
+                // these variable are needed in order to pass them to the edit widget solved MO_amer
+                String passedProductTitle = amer.data()['product_title'];
+                String passedProductPrice = amer.data()['product_price'];
+                String passedProductDesc = amer.data()['product_desc'];
 
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.red,
+                return GestureDetector(
+                  onTap: () {
+                    // this is only for making sure of the values ua_amer
+                    print("${amer.data()['product_desc']}".toString());
+                    Navigator.pushNamed(context, 'view_single_product');
+                  },
+                  child: ListTile(
+                    trailing: buildDeleteButton(amer),
+                    isThreeLine: false,
+                    title: Text(
+                      amer.data()['product_title'],
                     ),
-                    onPressed: () {
-                      FirebaseFirestore.instance
-                          .collection('products')
-                          .document(amer.documentID)
-                          .delete();
-                    },
+                    subtitle: Text(
+                      " ${amer.data()['product_desc']} \n ${amer.data()['product_price']} ",
+                      style: TextStyle(fontFamily: 'amer'),
+                    ),
+                    leading: SizedBox(
+                        width: 100,
+                        height: 50,
+                        child: Image(
+                          image: NetworkImage(amer.data()['images'][0]),
+                          fit: BoxFit.cover,
+                        )),
+                    // subtitle: Text(document.data()['company']),
                   ),
-                  // subtitle: Text(document.data()['company']),
                 );
               }).toList(),
             );
           },
         ),
       ),
+    );
+  }
+
+  IconButton buildDeleteButton(DocumentSnapshot amer) {
+    return IconButton(
+      icon: Icon(
+        Icons.delete,
+        color: Colors.red,
+      ),
+      onPressed: () {
+        FirebaseFirestore.instance
+            .collection('products')
+            .document(amer.documentID)
+            .delete();
+      },
+    );
+  }
+
+  IconButton buildEditButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.edit,
+        color: Colors.red,
+      ),
+      onPressed: () async {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          // print(passedProductTitle);
+          return EditProduct(
+              // oldProductDescController: passedProductDesc,
+              // oldProductPriceController: passedProductPrice,
+              // oldProductTitleController: passedProductTitle,
+              );
+        }));
+      },
     );
   }
 
@@ -74,6 +136,14 @@ class _ViewProductState extends State<ViewProduct> {
             title: 'AddCategory', routeName: 'add_category'),
         buildSingleListTile(context,
             title: 'ViewCategory', routeName: 'view_categories'),
+        buildSingleListTile(context,
+            title: 'EditProduct', routeName: 'edit_product'),
+        buildSingleListTile(context,
+            title: 'AddTags', routeName: 'view_categories'),
+        // so tags and any pages can be added in the same way
+        buildSingleListTile(context,
+            title: 'ViewTag', routeName: 'view_categories'),
+        // the concept of adding and Viewing items can be used for tags
       ]),
     );
   }
